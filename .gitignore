@@ -1,0 +1,82 @@
+# macOS
+.DS_Store
+
+# Java class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+*.jar.original
+
+# Maven
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Maven wrapper
+.mvn/
+
+# Gradle
+.gradle/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDEs and editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# IntelliJ
+/out/
+
+# Generated sources
+**/generated-sources/
+**/generated-test-sources/
+
+# Test output
+**/surefire-reports/
+**/test-classes/
+
+# Runtime
+*.pid
+app.pid
+
+# Environment files
+.env
+.env.*
+
+# Docker
+docker-compose.override.yml
+
+# OS files
+Thumbs.db
+
+# Build metadata
+target/
+
+# Misc
+*.log
+
+# Keep local configuration files out of VCS
+local.properties
+
+# Spring Boot
+spring.log
+
+# Idea misc
+.idea_modules/

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+</project>
+
+    </build>
+        </plugins>
+            </plugin>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+            <plugin>
+        <plugins>
+    <build>
+
+    </dependencyManagement>
+        </dependencies>
+            </dependency>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${spring-cloud.version}</version>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+            <dependency>
+        <dependencies>
+    <dependencyManagement>
+
+    </dependencies>
+        </dependency>
+            <scope>test</scope>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>org.springframework.boot</groupId>
+        <dependency>
+        </dependency>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+        <dependency>
+        </dependency>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.springframework.boot</groupId>
+        <dependency>
+    <dependencies>
+
+    </properties>
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <java.version>17</java.version>
+    <properties>
+
+    <description>Product Management Service</description>
+    <name>Product Service</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>product-service</artifactId>
+    <groupId>com.microservices</groupId>
+
+    </parent>
+        <relativePath/>
+        <version>3.1.5</version>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+    <parent>
+
+    <modelVersion>4.0.0</modelVersion>
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+
