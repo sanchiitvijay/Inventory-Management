@@ -2,8 +2,10 @@ package com.microservices.inventory.controller;
 
 import com.microservices.inventory.dto.InventoryItemRequest;
 import com.microservices.inventory.dto.InventoryItemResponse;
+import com.microservices.inventory.dto.LowStockAlertResponse;
 import com.microservices.inventory.event.LowStockEvent;
 import com.microservices.inventory.service.InventoryService;
+import com.microservices.inventory.service.LowStockAlertService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +17,11 @@ import java.util.List;
 public class InventoryController {
 
     private final InventoryService inventoryService;
+    private final LowStockAlertService alertService;
 
-    public InventoryController(InventoryService inventoryService) {
+    public InventoryController(InventoryService inventoryService, LowStockAlertService alertService) {
         this.inventoryService = inventoryService;
+        this.alertService = alertService;
     }
 
     @GetMapping("/{sku}")
@@ -62,5 +66,17 @@ public class InventoryController {
     public ResponseEntity<List<LowStockEvent>> getEventLog() {
         List<LowStockEvent> events = inventoryService.getEventLog();
         return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/alerts")
+    public ResponseEntity<List<LowStockAlertResponse>> getAllAlerts() {
+        List<LowStockAlertResponse> alerts = alertService.getAllAlerts();
+        return ResponseEntity.ok(alerts);
+    }
+
+    @GetMapping("/alerts/{sku}")
+    public ResponseEntity<List<LowStockAlertResponse>> getAlertsBySku(@PathVariable String sku) {
+        List<LowStockAlertResponse> alerts = alertService.getAlertsBySku(sku);
+        return ResponseEntity.ok(alerts);
     }
 }

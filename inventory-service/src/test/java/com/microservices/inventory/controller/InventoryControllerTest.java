@@ -3,8 +3,10 @@ package com.microservices.inventory.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservices.inventory.dto.InventoryItemRequest;
 import com.microservices.inventory.dto.InventoryItemResponse;
+import com.microservices.inventory.dto.LowStockAlertResponse;
 import com.microservices.inventory.event.LowStockEvent;
 import com.microservices.inventory.service.InventoryService;
+import com.microservices.inventory.service.LowStockAlertService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +36,9 @@ class InventoryControllerTest {
 
     @MockBean
     private InventoryService inventoryService;
+
+    @MockBean
+    private LowStockAlertService alertService;
 
     @Test
     void testGetInventoryBySku_Success() throws Exception {
@@ -187,5 +193,84 @@ class InventoryControllerTest {
                 .andExpect(jsonPath("$[0].availableQuantity").value(5))
                 .andExpect(jsonPath("$[1].productSku").value("LOW-002"))
                 .andExpect(jsonPath("$[1].availableQuantity").value(3));
+    }
+
+    @Test
+    void testGetAllAlerts_Success() throws Exception {
+        LowStockAlertResponse alert1 = new LowStockAlertResponse();
+        alert1.setId(1L);
+        alert1.setSku("SKU-001");
+        alert1.setAvailableQuantity(5);
+        alert1.setThreshold(10);
+        alert1.setTimestamp(Instant.now());
+
+        LowStockAlertResponse alert2 = new LowStockAlertResponse();
+        alert2.setId(2L);
+        alert2.setSku("SKU-002");
+        alert2.setAvailableQuantity(3);
+        alert2.setThreshold(8);
+        alert2.setTimestamp(Instant.now());
+
+        List<LowStockAlertResponse> alerts = Arrays.asList(alert1, alert2);
+
+        when(alertService.getAllAlerts())
+                .thenReturn(alerts);
+
+        mockMvc.perform(get("/inventory/alerts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].sku").value("SKU-001"))
+                .andExpect(jsonPath("$[0].availableQuantity").value(5))
+                .andExpect(jsonPath("$[0].threshold").value(10))
+                .andExpect(jsonPath("$[1].sku").value("SKU-002"))
+                .andExpect(jsonPath("$[1].availableQuantity").value(3));
+    }
+
+    @Test
+    void testGetAllAlerts_EmptyList() throws Exception {
+        when(alertService.getAllAlerts())
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/inventory/alerts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void testGetAlertsBySku_Success() throws Exception {
+        LowStockAlertResponse alert1 = new LowStockAlertResponse();
+        alert1.setId(1L);
+        alert1.setSku("TEST-SKU");
+        alert1.setAvailableQuantity(5);
+        alert1.setThreshold(10);
+        alert1.setTimestamp(Instant.now());
+
+        LowStockAlertResponse alert2 = new LowStockAlertResponse();
+        alert2.setId(2L);
+        alert2.setSku("TEST-SKU");
+        alert2.setAvailableQuantity(2);
+        alert2.setThreshold(10);
+        alert2.setTimestamp(Instant.now());
+
+        List<LowStockAlertResponse> alerts = Arrays.asList(alert1, alert2);
+
+        when(alertService.getAlertsBySku("TEST-SKU"))
+                .thenReturn(alerts);
+
+        mockMvc.perform(get("/inventory/alerts/TEST-SKU"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].sku").value("TEST-SKU"))
+                .andExpect(jsonPath("$[1].sku").value("TEST-SKU"));
+    }
+
+    @Test
+    void testGetAlertsBySku_NotFound() throws Exception {
+        when(alertService.getAlertsBySku("NON-EXISTENT"))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/inventory/alerts/NON-EXISTENT"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }

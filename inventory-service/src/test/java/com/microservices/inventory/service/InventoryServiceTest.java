@@ -102,6 +102,7 @@ class InventoryServiceTest {
         InventoryItemResponse response = inventoryService.createInventoryItem(request);
 
         assertTrue(response.isLowStock());
+        // Verify that alert creation is triggered
         verify(eventLogger, times(1)).logLowStockEvent(any(LowStockEvent.class));
     }
 
@@ -186,6 +187,7 @@ class InventoryServiceTest {
         inventoryService.deductStock("TEST-SKU-001", 85);
 
         verify(inventoryRepository, times(1)).save(any(InventoryItem.class));
+        // Verify alert is created when stock goes below threshold
         verify(eventLogger, times(1)).logLowStockEvent(any(LowStockEvent.class));
     }
 
@@ -204,6 +206,7 @@ class InventoryServiceTest {
         inventoryService.deductStock("TEST-SKU-001", 80);
 
         verify(inventoryRepository, times(1)).save(any(InventoryItem.class));
+        // Verify alert is created when stock equals threshold
         verify(eventLogger, times(1)).logLowStockEvent(any(LowStockEvent.class));
     }
 
