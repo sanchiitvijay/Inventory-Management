@@ -233,3 +233,78 @@ cd order-service && mvn test -Dtest=EndToEndIntegrationTest
 
 This project is for educational/demonstration purposes
 
+
+
+---
+
+## 📊 Dummy Data Script
+
+A convenient bash script to populate all microservices with test data and verify the setup.
+
+### Usage
+
+```bash
+# Make the script executable (first time only)
+chmod +x dummyData.sh
+
+# Run the script
+./dummyData.sh
+```
+
+### What It Does
+
+The `dummyData.sh` script automatically:
+
+1. **Checks Services** - Verifies all 5 microservices are running
+2. **Creates Products** - Adds 6 test products to Product Service
+   - Dell XPS 15 Laptop ($1299.99)
+   - Logitech MX Master 3 Mouse ($99.99)
+   - Keychron K2 Mechanical Keyboard ($89.99)
+   - LG UltraFine 27" 4K Monitor ($549.99)
+   - Logitech C920 HD Webcam ($79.99)
+   - Sony WH-1000XM4 Headphones ($349.99)
+
+3. **Creates Inventory** - Sets up inventory with various stock levels
+   - Some items with normal stock
+   - Some items with low stock (triggers alerts)
+
+4. **Processes Payments** - Creates test payment records
+   - Tests both successful and failed payment scenarios
+
+5. **Retrieves Data** - Fetches and displays all created data
+   - All products
+   - Inventory details
+   - Low stock alerts
+   - Payment records
+   - Service health status
+
+### Output
+
+The script provides:
+- ✅ Color-coded output for easy reading
+- 📊 Summary statistics
+- 🔗 Quick access links to all services
+- ⚠️ Low stock alerts
+- ✓ Health check results
+
+### Example Output
+
+```
+============================================
+✓ Data Population Complete!
+============================================
+
+Summary:
+  • Created 6 products
+  • Created 6 inventory items
+  • Detected 3 low stock items
+  • Generated 3 low stock alerts
+  • Processed 4 payments (3 success, 1 failed)
+```
+
+### Requirements
+
+- All 5 microservices must be running
+- `curl` and `jq` must be installed
+- Ports 8761, 8081-8084 must be accessible
+
