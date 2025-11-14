@@ -109,6 +109,7 @@ kubectl port-forward -n microservices-demo svc/payment-service 8084:8084
 - Service Port: 8761
 - Type: ClusterIP
 - Replicas: 1
+- Health Endpoint: `/actuator/health`
 
 ### Microservices
 - Product Service: Port 8081 (3 replicas)
@@ -117,6 +118,19 @@ kubectl port-forward -n microservices-demo svc/payment-service 8084:8084
 - Payment Service: Port 8084 (3 replicas)
 
 All microservices register with Eureka at: `http://eureka-server:8761/eureka/`
+
+### Health Checks
+
+All services include Spring Boot Actuator with health endpoints:
+
+- **Health Check**: `/actuator/health`
+- **Liveness Probe**: `/actuator/health/liveness`
+- **Readiness Probe**: `/actuator/health/readiness`
+- **All Actuator Endpoints**: `/actuator/*` (exposed for development)
+
+Kubernetes probe configuration:
+- **Readiness Probe**: 30s initial delay, checked every 5s
+- **Liveness Probe**: 60s initial delay, checked every 10s
 
 ## Example: Order Service with Environment Variables
 
@@ -131,6 +145,47 @@ env:
 ```
 
 These environment variables override the ConfigMap values and can be used for dynamic configuration.
+
+## Health Monitoring
+
+### Check Health Status
+
+Access health endpoints for any service:
+
+```bash
+# Via port-forward
+kubectl port-forward -n microservices-demo svc/product-service 8081:8081
+
+# Then access:
+# - http://localhost:8081/actuator/health
+# - http://localhost:8081/actuator/health/liveness
+# - http://localhost:8081/actuator/health/readiness
+# - http://localhost:8081/actuator/info
+# - http://localhost:8081/actuator/metrics
+```
+
+### Check Pod Health from Within Cluster
+
+```bash
+# Execute into a pod
+kubectl exec -it -n microservices-demo <pod-name> -- /bin/sh
+
+# Test health endpoint
+curl http://localhost:8081/actuator/health
+```
+
+### Monitor Probe Status
+
+```bash
+# Watch pod status
+kubectl get pods -n microservices-demo -w
+
+# Check probe failures in events
+kubectl describe pod <pod-name> -n microservices-demo | grep -A 10 Events
+
+# View probe configuration
+kubectl describe pod <pod-name> -n microservices-demo | grep -A 5 "Liveness\|Readiness"
+```
 
 ## Useful Commands
 
