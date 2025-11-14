@@ -8,6 +8,7 @@ import com.microservices.order.entity.Order;
 import com.microservices.order.entity.OrderItem;
 import com.microservices.order.entity.OrderStatus;
 import com.microservices.order.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -22,9 +23,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
 
-    private static final String PRODUCT_SERVICE_URL = "http://product-service/products";
-    private static final String PAYMENT_SERVICE_URL = "http://payment-service/payments";
-    private static final String INVENTORY_SERVICE_URL = "http://inventory-service/inventory";
+    @Value("${product-service.url:http://product-service}")
+    private String productServiceUrl;
+
+    @Value("${payment-service.url:http://payment-service}")
+    private String paymentServiceUrl;
+
+    @Value("${inventory-service.url:http://inventory-service}")
+    private String inventoryServiceUrl;
 
     public OrderService(OrderRepository orderRepository, RestTemplate restTemplate) {
         this.orderRepository = orderRepository;
@@ -49,7 +55,7 @@ public class OrderService {
         try {
             // Call product-service to validate product exists
             ProductResponse product = restTemplate.getForObject(
-                    PRODUCT_SERVICE_URL + "/sku/" + itemRequest.getProductSku(),
+                    productServiceUrl + "/products/sku/" + itemRequest.getProductSku(),
                     ProductResponse.class
             );
 
@@ -85,7 +91,7 @@ public class OrderService {
 
         try {
             PaymentResponse paymentResponse = restTemplate.postForObject(
-                    PAYMENT_SERVICE_URL + "/process",
+                    paymentServiceUrl + "/payments",
                     paymentRequest,
                     PaymentResponse.class
             );
@@ -109,8 +115,8 @@ public class OrderService {
                     order.setCancellationReason("Insufficient inventory to fulfill order");
                 }
             } else {
-                // Payment failed
-                order.setStatus(OrderStatus.CREATED);
+                // Payment failed - cancel order
+                order.setStatus(OrderStatus.CANCELLED);
                 order.setCancellationReason("Payment failed");
             }
 
@@ -127,7 +133,7 @@ public class OrderService {
             for (OrderItem item : order.getItems()) {
                 // Get current inventory
                 InventoryResponse inventory = restTemplate.getForObject(
-                        INVENTORY_SERVICE_URL + "/" + item.getProductSku(),
+                        inventoryServiceUrl + "/inventory/" + item.getProductSku(),
                         InventoryResponse.class
                 );
 
@@ -141,12 +147,9 @@ public class OrderService {
                 }
 
                 // Deduct stock
-                int newQuantity = inventory.getAvailable() - item.getQuantity();
-                InventoryUpdateRequest updateRequest = new InventoryUpdateRequest(newQuantity);
-
                 restTemplate.put(
-                        INVENTORY_SERVICE_URL + "/" + item.getProductSku(),
-                        updateRequest
+                        inventoryServiceUrl + "/inventory/" + item.getProductSku() + "/deduct?quantity=" + item.getQuantity(),
+                        null
                 );
             }
             return true;

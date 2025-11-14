@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  cloud:
+    loadbalancer:
+      enabled: false
+
+server:
+  port: 0  # Random port for testing
+
+eureka:
+  client:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+# Service URLs will be overridden by test configuration
+product-service:
+  url: http://localhost:${wiremock.product.port}
+
+inventory-service:
+  url: http://localhost:${wiremock.inventory.port}
+
+payment-service:
+  url: http://localhost:${wiremock.payment.port}

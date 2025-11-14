@@ -53,37 +53,4 @@ public class InventoryClient {
             return null;
         }
     }
-
-    /**
-     * Reserve inventory for a product
-     * @param request Inventory update request
-     * @return InventoryResponse or null if error occurs
-     */
-    public InventoryResponse reserveInventory(InventoryUpdateRequest request) {
-        try {
-            return webClient.post()
-                    .uri("/api/inventory/reserve")
-                    .bodyValue(request)
-                    .retrieve()
-                    .bodyToMono(InventoryResponse.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofMillis(500))
-                            .filter(throwable -> throwable instanceof WebClientResponseException.ServiceUnavailable)
-                            .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-                                logger.error("Retry exhausted for inventory reservation: {}", request.getProductSku());
-                                return new RuntimeException("Inventory service unavailable after retries");
-                            }))
-                    .doOnError(error -> logger.error("Error reserving inventory for SKU {}: {}", 
-                            request.getProductSku(), error.getMessage()))
-                    .onErrorResume(throwable -> {
-                        logger.warn("Failed to reserve inventory for SKU {} due to: {}", 
-                                request.getProductSku(), throwable.getMessage());
-                        return Mono.empty();
-                    })
-                    .block();
-        } catch (Exception e) {
-            logger.error("Unexpected error reserving inventory for SKU {}: {}", 
-                    request.getProductSku(), e.getMessage());
-            return null;
-        }
-    }
 }
