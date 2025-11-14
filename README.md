@@ -110,5 +110,5 @@ This is a basic skeleton. You can extend each service with:
 - Ensure Eureka Server is running before starting other services
 - Each service is a standalone Spring Boot application
 - Services automatically register with Eureka on startup
-- All services use Java 17 and Spring Boot 3.1.5
+- All services use Java 17+ and Spring Boot 3.1.5
 
