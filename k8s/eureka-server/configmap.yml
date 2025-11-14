@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eureka-server-config
+  namespace: microservices-demo
+data:
+  application.yml: |
+    server:
+      port: 8761
+    spring:
+      application:
+        name: eureka-server
+    eureka:
+      client:
+        register-with-eureka: false
+        fetch-registry: false
+      server:
+        wait-time-in-ms-when-sync-empty: 0
