@@ -2,8 +2,64 @@
 
 # Microservices Dummy Data Script
 # This script populates all microservices with test data and retrieves it for verification
+#
+# ============================================
+# ALL AVAILABLE ENDPOINTS BY SERVICE
+# ============================================
+#
+# PRODUCT SERVICE (Port 8081)
+# ---------------------------
+# POST   /products              - Create a new product
+# GET    /products              - Get all products
+# GET    /products/{id}         - Get product by ID
+# GET    /products/sku/{sku}    - Get product by SKU
+# PUT    /products/{id}         - Update product by ID
+# DELETE /products/{id}         - Delete product by ID
+# GET    /actuator/health       - Health check
+#
+# INVENTORY SERVICE (Port 8082)
+# -----------------------------
+# GET    /inventory/{sku}       - Get inventory by SKU
+# POST   /inventory             - Create inventory for a product
+# PUT    /inventory/{sku}       - Update inventory (add/remove stock)
+# GET    /inventory/low-stock   - Get all low stock items
+# GET    /inventory/events      - Get all inventory events (SSE - Server-Sent Events)
+# GET    /inventory/alerts      - Get all low stock alerts
+# GET    /inventory/alerts/{sku} - Get low stock alerts by SKU
+# GET    /actuator/health       - Health check
+#
+# ORDER SERVICE (Port 8083)
+# -------------------------
+# POST   /orders                - Create a new order
+# POST   /orders/{id}/pay       - Process payment for an order
+# GET    /orders/{id}           - Get order by ID
+# GET    /orders                - Get all orders
+# GET    /dashboard             - Order dashboard (HTML UI)
+# GET    /actuator/health       - Health check
+#
+# PAYMENT SERVICE (Port 8084)
+# ---------------------------
+# POST   /payments/process      - Process a payment
+# GET    /payments/{id}         - Get payment details by ID
+# GET    /actuator/health       - Health check
+#
+# EUREKA SERVER (Port 8761)
+# -------------------------
+# GET    /                      - Eureka dashboard
+# GET    /actuator/health       - Health check
+#
+# ============================================
 
 set -e  # Exit on error
+
+# Output file for storing results
+OUTPUT_FILE="output.txt"
+
+# Clear output file and add header
+echo "Microservices Dummy Data Population Output" > "$OUTPUT_FILE"
+echo "Generated on: $(date)" >> "$OUTPUT_FILE"
+echo "============================================" >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
 
 # Color codes for output
 RED='\033[0;31m'
@@ -71,6 +127,7 @@ echo ""
 
 # Create Product 1 - Laptop
 echo -e "${MAGENTA}Creating Product: Laptop${NC}"
+echo "Creating Product: Laptop" >> "$OUTPUT_FILE"
 PRODUCT1=$(curl -s -X POST $PRODUCT_SERVICE/products \
   -H "Content-Type: application/json" \
   -d '{
@@ -79,7 +136,7 @@ PRODUCT1=$(curl -s -X POST $PRODUCT_SERVICE/products \
     "description": "High-performance laptop with Intel i7 processor",
     "recommendedRetailPrice": 1299.99
   }')
-echo "$PRODUCT1" | jq .
+echo "$PRODUCT1" | jq . | tee -a "$OUTPUT_FILE"
 PRODUCT1_ID=$(echo "$PRODUCT1" | jq -r '.id')
 wait_between_requests
 
@@ -232,10 +289,104 @@ echo -e "${GREEN}✓ Created 6 inventory items${NC}"
 echo ""
 
 # ============================================
+# ORDER SERVICE - Create Orders
+# ============================================
+echo -e "${BLUE}============================================${NC}"
+echo -e "${BLUE}3. Creating Orders${NC}"
+echo -e "${BLUE}============================================${NC}"
+echo ""
+
+# Order 1 - Laptop order
+echo -e "${MAGENTA}Creating Order: Laptop (2 units)${NC}"
+ORDER1=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "LAPTOP-XPS15",
+    "quantity": 2,
+    "price": 1299.99
+  }')
+echo "$ORDER1" | jq .
+wait_between_requests
+
+# Order 2 - Mouse order
+echo -e "${MAGENTA}Creating Order: Wireless Mouse (5 units)${NC}"
+ORDER2=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "MOUSE-MX3",
+    "quantity": 5,
+    "price": 99.99
+  }')
+echo "$ORDER2" | jq .
+wait_between_requests
+
+# Order 3 - Keyboard order
+echo -e "${MAGENTA}Creating Order: Mechanical Keyboard (3 units)${NC}"
+ORDER3=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "KEYBOARD-K2",
+    "quantity": 3,
+    "price": 89.99
+  }')
+echo "$ORDER3" | jq .
+wait_between_requests
+
+# Order 4 - Monitor order
+echo -e "${MAGENTA}Creating Order: 4K Monitor (1 unit)${NC}"
+ORDER4=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "MONITOR-LG27",
+    "quantity": 1,
+    "price": 549.99
+  }')
+echo "$ORDER4" | jq .
+wait_between_requests
+
+# Order 5 - Headphones order
+echo -e "${MAGENTA}Creating Order: Headphones (4 units)${NC}"
+ORDER5=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "HEADPHONES-SONY",
+    "quantity": 4,
+    "price": 349.99
+  }')
+echo "$ORDER5" | jq .
+wait_between_requests
+
+# Order 6 - Another Keyboard order
+echo -e "${MAGENTA}Creating Order: Mechanical Keyboard (10 units)${NC}"
+ORDER6=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "KEYBOARD-K2",
+    "quantity": 10,
+    "price": 89.99
+  }')
+echo "$ORDER6" | jq .
+wait_between_requests
+
+# Order 7 - Webcam order
+echo -e "${MAGENTA}Creating Order: HD Webcam (2 units)${NC}"
+ORDER7=$(curl -s -X POST $ORDER_SERVICE/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productSku": "WEBCAM-C920",
+    "quantity": 2,
+    "price": 79.99
+  }')
+echo "$ORDER7" | jq .
+
+echo -e "${GREEN}✓ Created 7 orders${NC}"
+echo ""
+
+# ============================================
 # PAYMENT SERVICE - Process Payments
 # ============================================
 echo -e "${BLUE}============================================${NC}"
-echo -e "${BLUE}3. Processing Test Payments${NC}"
+echo -e "${BLUE}4. Processing Test Payments${NC}"
 echo -e "${BLUE}============================================${NC}"
 echo ""
 
@@ -293,7 +444,7 @@ echo ""
 # RETRIEVING DATA - Verification
 # ============================================
 echo -e "${BLUE}============================================${NC}"
-echo -e "${BLUE}4. Retrieving All Data (Verification)${NC}"
+echo -e "${BLUE}5. Retrieving All Data (Verification)${NC}"
 echo -e "${BLUE}============================================${NC}"
 echo ""
 
@@ -336,6 +487,14 @@ ALERT_COUNT=$(echo "$ALERTS" | jq 'length')
 echo -e "${YELLOW}Found $ALERT_COUNT low stock alerts${NC}"
 echo ""
 
+# Get all orders
+echo -e "${CYAN}━━━ All Orders ━━━${NC}"
+ALL_ORDERS=$(curl -s $ORDER_SERVICE/orders)
+echo "$ALL_ORDERS" | jq .
+ORDER_COUNT=$(echo "$ALL_ORDERS" | jq 'length')
+echo -e "${YELLOW}Found $ORDER_COUNT orders${NC}"
+echo ""
+
 # Get payment details
 echo -e "${CYAN}━━━ Payment Details (ID: 1) ━━━${NC}"
 curl -s $PAYMENT_SERVICE/payments/1 | jq .
@@ -364,6 +523,7 @@ echo ""
 echo -e "${CYAN}Summary:${NC}"
 echo -e "  • Created ${GREEN}6 products${NC}"
 echo -e "  • Created ${GREEN}6 inventory items${NC}"
+echo -e "  • Created ${GREEN}7 orders${NC}"
 echo -e "  • Detected ${YELLOW}$LOW_STOCK_COUNT low stock items${NC}"
 echo -e "  • Generated ${YELLOW}$ALERT_COUNT low stock alerts${NC}"
 echo -e "  • Processed ${GREEN}4 payments${NC} (3 success, 1 failed)"

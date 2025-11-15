@@ -1,0 +1,366 @@
+[0;36m======================================[0m
+[0;36m  Microservices Data Population Tool[0m
+[0;36m======================================[0m
+
+[1;33mChecking if all services are running...[0m
+  [0;32m✓[0m Eureka Service (port 8761) is running
+  [0;32m✓[0m Product Service (port 8081) is running
+  [0;32m✓[0m Inventory Service (port 8082) is running
+  [0;32m✓[0m Order Service (port 8083) is running
+  [0;32m✓[0m Payment Service (port 8084) is running
+
+[0;34m============================================[0m
+[0;34m1. Creating Products[0m
+[0;34m============================================[0m
+
+[0;35mCreating Product: Laptop[0m
+{
+  "id": 1,
+  "name": "Dell XPS 15",
+  "sku": "LAPTOP-XPS15",
+  "description": "High-performance laptop with Intel i7 processor",
+  "recommendedRetailPrice": 1299.99
+}
+[0;35mCreating Product: Wireless Mouse[0m
+{
+  "id": 2,
+  "name": "Logitech MX Master 3",
+  "sku": "MOUSE-MX3",
+  "description": "Ergonomic wireless mouse for professionals",
+  "recommendedRetailPrice": 99.99
+}
+[0;35mCreating Product: Mechanical Keyboard[0m
+{
+  "id": 3,
+  "name": "Keychron K2 Mechanical Keyboard",
+  "sku": "KEYBOARD-K2",
+  "description": "Wireless mechanical keyboard with RGB lighting",
+  "recommendedRetailPrice": 89.99
+}
+[0;35mCreating Product: 4K Monitor[0m
+{
+  "id": 4,
+  "name": "LG UltraFine 27UN850",
+  "sku": "MONITOR-LG27",
+  "description": "27-inch 4K UHD monitor with USB-C",
+  "recommendedRetailPrice": 549.99
+}
+[0;35mCreating Product: HD Webcam[0m
+{
+  "id": 5,
+  "name": "Logitech C920 HD Pro",
+  "sku": "WEBCAM-C920",
+  "description": "1080p HD webcam with stereo audio",
+  "recommendedRetailPrice": 79.99
+}
+[0;35mCreating Product: Noise-Cancelling Headphones[0m
+{
+  "id": 6,
+  "name": "Sony WH-1000XM4",
+  "sku": "HEADPHONES-SONY",
+  "description": "Premium noise-cancelling wireless headphones",
+  "recommendedRetailPrice": 349.99
+}
+[0;32m✓ Created 6 products[0m
+
+[0;34m============================================[0m
+[0;34m2. Creating Inventory[0m
+[0;34m============================================[0m
+
+[0;35mCreating Inventory: Laptop (Normal Stock)[0m
+{
+  "id": 1,
+  "productSku": "LAPTOP-XPS15",
+  "available": 25,
+  "threshold": 5,
+  "lastUpdated": "2025-11-15T09:02:29.704716050Z",
+  "lowStock": false
+}
+[0;35mCreating Inventory: Mouse (Low Stock - Alert!)[0m
+{
+  "id": 2,
+  "productSku": "MOUSE-MX3",
+  "available": 3,
+  "threshold": 10,
+  "lastUpdated": "2025-11-15T09:02:30.278749217Z",
+  "lowStock": true
+}
+[0;35mCreating Inventory: Keyboard (High Stock)[0m
+{
+  "id": 3,
+  "productSku": "KEYBOARD-K2",
+  "available": 150,
+  "threshold": 20,
+  "lastUpdated": "2025-11-15T09:02:30.834236842Z",
+  "lowStock": false
+}
+[0;35mCreating Inventory: Monitor (Normal Stock)[0m
+{
+  "id": 4,
+  "productSku": "MONITOR-LG27",
+  "available": 15,
+  "threshold": 5,
+  "lastUpdated": "2025-11-15T09:02:31.382081467Z",
+  "lowStock": false
+}
+[0;35mCreating Inventory: Webcam (Low Stock - Alert!)[0m
+{
+  "id": 5,
+  "productSku": "WEBCAM-C920",
+  "available": 2,
+  "threshold": 8,
+  "lastUpdated": "2025-11-15T09:02:31.917605051Z",
+  "lowStock": true
+}
+[0;35mCreating Inventory: Headphones (Normal Stock)[0m
+{
+  "id": 6,
+  "productSku": "HEADPHONES-SONY",
+  "available": 40,
+  "threshold": 10,
+  "lastUpdated": "2025-11-15T09:02:32.441947635Z",
+  "lowStock": false
+}
+[0;32m✓ Created 6 inventory items[0m
+
+[0;34m============================================[0m
+[0;34m3. Creating Orders[0m
+[0;34m============================================[0m
+
+[0;35mCreating Order: Laptop (2 units)[0m
+[0;35mCreating Order: Wireless Mouse (5 units)[0m
+[0;35mCreating Order: Mechanical Keyboard (3 units)[0m
+[0;35mCreating Order: 4K Monitor (1 unit)[0m
+[0;35mCreating Order: Headphones (4 units)[0m
+[0;35mCreating Order: Mechanical Keyboard (10 units)[0m
+[0;35mCreating Order: HD Webcam (2 units)[0m
+[0;32m✓ Created 7 orders[0m
+
+[0;34m============================================[0m
+[0;34m4. Processing Test Payments[0m
+[0;34m============================================[0m
+
+[0;35mProcessing Payment: Successful (Amount: 50.00)[0m
+{
+  "id": 1,
+  "orderId": "ORDER-001",
+  "amount": 450.00,
+  "status": "SUCCESS",
+  "method": "CREDIT_CARD",
+  "createdAt": "2025-11-15T09:02:35.989758720Z",
+  "updatedAt": "2025-11-15T09:02:35.989758845Z"
+}
+[0;35mProcessing Payment: Successful (Amount: 99.99)[0m
+{
+  "id": 2,
+  "orderId": "ORDER-002",
+  "amount": 799.99,
+  "status": "FAILED",
+  "method": "DEBIT_CARD",
+  "createdAt": "2025-11-15T09:02:36.579393470Z",
+  "updatedAt": "2025-11-15T09:02:36.579393637Z"
+}
+[0;35mProcessing Payment: Failed (Amount: 500.00)[0m
+{
+  "id": 3,
+  "orderId": "ORDER-003",
+  "amount": 1500.00,
+  "status": "SUCCESS",
+  "method": "CREDIT_CARD",
+  "createdAt": "2025-11-15T09:02:37.123541512Z",
+  "updatedAt": "2025-11-15T09:02:37.123542095Z"
+}
+[0;35mProcessing Payment: Successful (Amount: 89.98)[0m
+{
+  "id": 4,
+  "orderId": "ORDER-004",
+  "amount": 189.98,
+  "status": "SUCCESS",
+  "method": "PAYPAL",
+  "createdAt": "2025-11-15T09:02:37.670789304Z",
+  "updatedAt": "2025-11-15T09:02:37.670789845Z"
+}
+[0;32m✓ Processed 4 test payments[0m
+
+[0;34m============================================[0m
+[0;34m5. Retrieving All Data (Verification)[0m
+[0;34m============================================[0m
+
+[0;36m━━━ All Products ━━━[0m
+[
+  {
+    "id": 1,
+    "name": "Dell XPS 15",
+    "sku": "LAPTOP-XPS15",
+    "description": "High-performance laptop with Intel i7 processor",
+    "recommendedRetailPrice": 1299.99
+  },
+  {
+    "id": 2,
+    "name": "Logitech MX Master 3",
+    "sku": "MOUSE-MX3",
+    "description": "Ergonomic wireless mouse for professionals",
+    "recommendedRetailPrice": 99.99
+  },
+  {
+    "id": 3,
+    "name": "Keychron K2 Mechanical Keyboard",
+    "sku": "KEYBOARD-K2",
+    "description": "Wireless mechanical keyboard with RGB lighting",
+    "recommendedRetailPrice": 89.99
+  },
+  {
+    "id": 4,
+    "name": "LG UltraFine 27UN850",
+    "sku": "MONITOR-LG27",
+    "description": "27-inch 4K UHD monitor with USB-C",
+    "recommendedRetailPrice": 549.99
+  },
+  {
+    "id": 5,
+    "name": "Logitech C920 HD Pro",
+    "sku": "WEBCAM-C920",
+    "description": "1080p HD webcam with stereo audio",
+    "recommendedRetailPrice": 79.99
+  },
+  {
+    "id": 6,
+    "name": "Sony WH-1000XM4",
+    "sku": "HEADPHONES-SONY",
+    "description": "Premium noise-cancelling wireless headphones",
+    "recommendedRetailPrice": 349.99
+  }
+]
+
+[0;36m━━━ Product Details (ID: 1) ━━━[0m
+{
+  "id": 1,
+  "name": "Dell XPS 15",
+  "sku": "LAPTOP-XPS15",
+  "description": "High-performance laptop with Intel i7 processor",
+  "recommendedRetailPrice": 1299.99
+}
+
+[0;36m━━━ Inventory for LAPTOP-XPS15 ━━━[0m
+{
+  "id": 1,
+  "productSku": "LAPTOP-XPS15",
+  "available": 25,
+  "threshold": 5,
+  "lastUpdated": "2025-11-15T09:02:29.704716Z",
+  "lowStock": false
+}
+
+[0;36m━━━ Inventory for MOUSE-MX3 ━━━[0m
+{
+  "id": 2,
+  "productSku": "MOUSE-MX3",
+  "available": 3,
+  "threshold": 10,
+  "lastUpdated": "2025-11-15T09:02:30.278749Z",
+  "lowStock": true
+}
+
+[0;36m━━━ Inventory for KEYBOARD-K2 ━━━[0m
+{
+  "id": 3,
+  "productSku": "KEYBOARD-K2",
+  "available": 150,
+  "threshold": 20,
+  "lastUpdated": "2025-11-15T09:02:30.834237Z",
+  "lowStock": false
+}
+
+[0;36m━━━ Low Stock Items ━━━[0m
+[
+  {
+    "id": 2,
+    "productSku": "MOUSE-MX3",
+    "available": 3,
+    "threshold": 10,
+    "lastUpdated": "2025-11-15T09:02:30.278749Z",
+    "lowStock": true
+  },
+  {
+    "id": 5,
+    "productSku": "WEBCAM-C920",
+    "available": 2,
+    "threshold": 8,
+    "lastUpdated": "2025-11-15T09:02:31.917605Z",
+    "lowStock": true
+  }
+]
+[1;33mFound 2 items with low stock[0m
+
+[0;36m━━━ Low Stock Alerts (Persisted) ━━━[0m
+[
+  {
+    "id": 2,
+    "sku": "WEBCAM-C920",
+    "availableQuantity": 2,
+    "threshold": 8,
+    "timestamp": "2025-11-15T09:02:31.918426Z"
+  },
+  {
+    "id": 1,
+    "sku": "MOUSE-MX3",
+    "availableQuantity": 3,
+    "threshold": 10,
+    "timestamp": "2025-11-15T09:02:30.281175Z"
+  }
+]
+[1;33mFound 2 low stock alerts[0m
+
+[0;36m━━━ All Orders ━━━[0m
+[]
+[1;33mFound 0 orders[0m
+
+[0;36m━━━ Payment Details (ID: 1) ━━━[0m
+{
+  "id": 1,
+  "orderId": "ORDER-001",
+  "amount": 450.00,
+  "status": "SUCCESS",
+  "method": "CREDIT_CARD",
+  "createdAt": "2025-11-15T09:02:35.989759Z",
+  "updatedAt": "2025-11-15T09:02:35.989759Z"
+}
+
+[0;36m━━━ Payment Details (ID: 3 - Failed) ━━━[0m
+{
+  "id": 3,
+  "orderId": "ORDER-003",
+  "amount": 1500.00,
+  "status": "SUCCESS",
+  "method": "CREDIT_CARD",
+  "createdAt": "2025-11-15T09:02:37.123542Z",
+  "updatedAt": "2025-11-15T09:02:37.123542Z"
+}
+
+[0;36m━━━ Service Health Status ━━━[0m
+Eureka Server: UP
+Product Service: UP
+Inventory Service: UP
+Order Service: UP
+Payment Service: UP
+
+[0;32m============================================[0m
+[0;32m✓ Data Population Complete![0m
+[0;32m============================================[0m
+
+[0;36mSummary:[0m
+  • Created [0;32m6 products[0m
+  • Created [0;32m6 inventory items[0m
+  • Created [0;32m7 orders[0m
+  • Detected [1;33m2 low stock items[0m
+  • Generated [1;33m2 low stock alerts[0m
+  • Processed [0;32m4 payments[0m (3 success, 1 failed)
+
+[0;36mAccess Points:[0m
+  • Eureka Dashboard: [0;34mhttp://localhost:8761[0m
+  • Order Dashboard:  [0;34mhttp://localhost:8083/dashboard[0m
+  • Product API:      [0;34mhttp://localhost:8081/products[0m
+  • Inventory API:    [0;34mhttp://localhost:8082/inventory[0m
+  • Payment API:      [0;34mhttp://localhost:8084/payments[0m
+
+[0;32mAll services populated with dummy data successfully! 🎉[0m

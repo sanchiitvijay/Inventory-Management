@@ -43,6 +43,13 @@ public class ProductController {
                 .orElse(new ResponseEntity<>("Product not found with id: " + id, HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/sku/{sku}")
+    public ResponseEntity<?> getProductBySku(@PathVariable String sku) {
+        return productService.getProductBySku(sku)
+                .<ResponseEntity<?>>map(product -> new ResponseEntity<>(product, HttpStatus.OK))
+                .orElse(new ResponseEntity<>("Product not found with sku: " + sku, HttpStatus.NOT_FOUND));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
         try {
