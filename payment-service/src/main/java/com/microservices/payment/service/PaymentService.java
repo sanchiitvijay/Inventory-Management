@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class PaymentService {
@@ -62,5 +63,55 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
         return new PaymentResponse(payment);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PaymentResponse> getAllPayments() {
+        return paymentRepository.findAll().stream()
+                .map(PaymentResponse::new)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PaymentResponse getPaymentByOrderId(String orderId) {
+        List<Payment> payments = paymentRepository.findByOrderId(orderId);
+        if (payments.isEmpty()) {
+            throw new RuntimeException("Payment not found for order: " + orderId);
+        }
+        // Return the most recent payment for the order
+        return new PaymentResponse(payments.get(payments.size() - 1));
+    }
+
+    @Transactional
+    public PaymentResponse updatePayment(Long id, PaymentRequest request) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+
+        if (payment.getStatus() == PaymentStatus.SUCCESS) {
+            throw new RuntimeException("Cannot update successful payment");
+        }
+
+        payment.setOrderId(request.getOrderId());
+        payment.setAmount(request.getAmount());
+        payment.setMethod(request.getMethod());
+
+        // Re-process with new amount
+        PaymentStatus resultStatus = determinePaymentStatus(request.getAmount());
+        payment.setStatus(resultStatus);
+
+        Payment updatedPayment = paymentRepository.save(payment);
+        return new PaymentResponse(updatedPayment);
+    }
+
+    @Transactional
+    public void deletePayment(Long id) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+
+        if (payment.getStatus() == PaymentStatus.SUCCESS) {
+            throw new RuntimeException("Cannot delete successful payment");
+        }
+
+        paymentRepository.delete(payment);
     }
 }
